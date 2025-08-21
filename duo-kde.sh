@@ -290,6 +290,14 @@ function duo-watch-monitor() {
     done
 }
 
+function duo-watch-rotate() {
+    echo "$(date) - ROTATE - Watching"
+
+    monitor-sensor --accel |
+        stdbuf -oL sed -n -e 's/^.*changed: //p' |
+        xargs -I '{}' duo "{}" 2>/dev/null
+}
+
 function duo-cli() {
     . /tmp/duo/status
     case "${1}" in
@@ -349,14 +357,6 @@ function duo-cli() {
         echo "$(date) - UNKNOWN - $@"
         ;;
     esac
-}
-
-function duo-watch-rotate() {
-    echo "$(date) - ROTATE - Watching"
-    monitor-sensor --accel |
-        stdbuf -oL grep "Accelerometer orientation changed:" |
-        stdbuf -oL awk '{print $4}' |
-        xargs -I '{}' stdbuf -oL "$0" '{}' 2>/dev/null
 }
 
 function main() {
