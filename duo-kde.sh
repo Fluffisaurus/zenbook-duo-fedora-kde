@@ -134,10 +134,9 @@ fi
 
 WIFI_BEFORE=$(nmcli radio wifi)
 BLUETOOTH_BEFORE=$(rfkill -n -o SOFT list bluetooth |head -n1)
-KEYBOARD_ATTACHED=false
-if [ -n "$(lsusb | grep 'Zenbook Duo Keyboard')" ]; then
-    KEYBOARD_ATTACHED=true
-fi
+
+# keyboard attachment check
+[ -n "$(lsusb | grep 'Zenbook Duo Keyboard')" ] && KEYBOARD_ATTACHED=true || KEYBOARD_ATTACHED=false
 MONITOR_COUNT=$(kscreen-doctor --dpms show | grep 'eDP-' | wc -l)
 function duo-set-status() {
     echo "
@@ -224,10 +223,8 @@ function duo-watch-lock() {
 
 function duo-check-monitor() {
     . /tmp/duo/status
-    KEYBOARD_ATTACHED=false
-    if [ -n "$(lsusb | grep 'Zenbook Duo Keyboard')" ]; then
-        KEYBOARD_ATTACHED=true
-    fi
+    # keyboard attachment check
+    [ -n "$(lsusb | grep 'Zenbook Duo Keyboard')" ] && KEYBOARD_ATTACHED=true || KEYBOARD_ATTACHED=false
 
     MONITOR_COUNT=$(kscreen-doctor --dpms show | grep 'eDP-' | wc -l)
     duo-set-status
